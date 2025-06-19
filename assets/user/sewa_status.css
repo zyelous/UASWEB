@@ -1,0 +1,286 @@
+
+        body {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8f5e8 100%);
+            min-height: 100vh;
+        }
+        
+        .hero-section {
+            background: linear-gradient(135deg, #43a047 0%, #66bb6a 100%);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+            border-radius: 0 0 30px 30px;
+            box-shadow: 0 8px 32px rgba(67, 160, 71, 0.3);
+        }
+        
+        .filter-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 8px 32px rgba(67, 160, 71, 0.1);
+            margin-bottom: 2rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-card:hover {
+            border-color: #43a047;
+            box-shadow: 0 12px 40px rgba(67, 160, 71, 0.15);
+        }
+        
+        .rental-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(67, 160, 71, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            height: 100%;
+            margin-bottom: 1.5rem;
+        }
+        
+        .rental-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(67, 160, 71, 0.2);
+            border-color: #43a047;
+        }
+        
+        .rental-header {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .rental-body {
+            padding: 1.5rem;
+        }
+        
+        .rental-footer {
+            padding: 1rem 1.5rem;
+            background: rgba(0,0,0,0.02);
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .room-image {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+        
+        .rental-card:hover .room-image {
+            transform: scale(1.05);
+        }
+        
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .status-pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        
+        .status-approved {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-active {
+            background-color: #cce5ff;
+            color: #004085;
+        }
+        
+        .status-rejected {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .status-completed {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+        
+        .btn-filter {
+            border-radius: 20px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 0.2rem;
+            border: 2px solid transparent;
+        }
+        
+        .btn-filter.active {
+            background: #43a047;
+            color: white;
+            box-shadow: 0 4px 10px rgba(67, 160, 71, 0.3);
+        }
+        
+        .btn-filter:not(.active) {
+            background: white;
+            color: #43a047;
+            border-color: #43a047;
+        }
+        
+        .btn-filter:hover:not(.active) {
+            background: rgba(67, 160, 71, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .btn-eco {
+            background: linear-gradient(135deg, #43a047, #66bb6a);
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn-eco:hover {
+            background: linear-gradient(135deg, #2e7d32, #43a047);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 160, 71, 0.3);
+            color: white;
+        }
+        
+        .progress-timeline {
+            position: relative;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+        }
+        
+        .progress-timeline::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 15px;
+            width: 2px;
+            background: #e9ecef;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-left: 40px;
+            padding-bottom: 1.5rem;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-icon {
+            position: absolute;
+            left: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            border: 2px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+        }
+        
+        .timeline-icon.active {
+            background: #43a047;
+            color: white;
+            border-color: #43a047;
+            box-shadow: 0 0 0 4px rgba(67, 160, 71, 0.2);
+        }
+        
+        .timeline-content {
+            padding: 0.5rem 0;
+        }
+        
+        .price-tag {
+            background: linear-gradient(135deg, #43a047, #66bb6a);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1rem;
+            display: inline-block;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(67, 160, 71, 0.1);
+        }
+        
+        .empty-icon {
+            font-size: 5rem;
+            color: #e0e0e0;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title {
+            color: #43a047;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #43a047, #66bb6a);
+            border-radius: 2px;
+        }
+        
+        .status-count {
+            background: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        
+        .rental-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .info-icon {
+            width: 28px;
+            height: 28px;
+            background: rgba(67, 160, 71, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #43a047;
+        }
