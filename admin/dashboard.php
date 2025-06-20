@@ -1,3 +1,22 @@
+<?php
+require_once '../includes/auth_admin.php';
+require_once '../includes/db.php';
+checkAdminAuth();
+
+// Get statistics
+$stmt = $pdo->query("SELECT COUNT(*) as total_kamar FROM kamar");
+$total_kamar = $stmt->fetch()['total_kamar'];
+
+$stmt = $pdo->query("SELECT COUNT(*) as total_users FROM users");
+$total_users = $stmt->fetch()['total_users'];
+
+$stmt = $pdo->query("SELECT COUNT(*) as total_sewa FROM sewa");
+$total_sewa = $stmt->fetch()['total_sewa'];
+
+$stmt = $pdo->query("SELECT COUNT(*) as pending_sewa FROM sewa WHERE status = 'pending'");
+$pending_sewa = $stmt->fetch()['pending_sewa'];
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -12,8 +31,8 @@
         <div class="container">
             <a class="navbar-brand" href="#">Admin Panel</a>
             <div class="navbar-nav ms-auto">
-                <span class="navbar-text me-3">Selamat datang, Admin</span>
-                <a class="nav-link" href="../logout.html">Logout</a>
+                <span class="navbar-text me-3">Selamat datang, <?php echo $_SESSION['admin_username']; ?></span>
+                <a class="nav-link" href="../logout.php">Logout</a>
             </div>
         </div>
     </nav>
@@ -26,7 +45,7 @@
                 <div class="card bg-primary text-white">
                     <div class="card-body">
                         <h5>Total Kamar</h5>
-                        <h2>2</h2>
+                        <h2><?php echo $total_kamar; ?></h2>
                     </div>
                 </div>
             </div>
@@ -34,7 +53,7 @@
                 <div class="card bg-success text-white">
                     <div class="card-body">
                         <h5>Total Users</h5>
-                        <h2>10</h2>
+                        <h2><?php echo $total_users; ?></h2>
                     </div>
                 </div>
             </div>
@@ -42,7 +61,7 @@
                 <div class="card bg-info text-white">
                     <div class="card-body">
                         <h5>Total Sewa</h5>
-                        <h2>4</h2>
+                        <h2><?php echo $total_sewa; ?></h2>
                     </div>
                 </div>
             </div>
@@ -50,7 +69,7 @@
                 <div class="card bg-warning text-white">
                     <div class="card-body">
                         <h5>Pending Sewa</h5>
-                        <h2>2</h2>
+                        <h2><?php echo $pending_sewa; ?></h2>
                     </div>
                 </div>
             </div>
@@ -65,13 +84,13 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-4">
-                                <a href="kamar_list.html" class="btn btn-primary w-100 mb-2">Kelola Kamar</a>
+                                <a href="kamar_list.php" class="btn btn-primary w-100 mb-2">Kelola Kamar</a>
                             </div>
                             <div class="col-md-4">
-                                <a href="sewa_list.html" class="btn btn-success w-100 mb-2">Kelola Sewa</a>
+                                <a href="sewa_list.php" class="btn btn-success w-100 mb-2">Kelola Sewa</a>
                             </div>
                             <div class="col-md-4">
-                                <a href="user_list.html" class="btn btn-info w-100 mb-2">Kelola User</a>
+                                <a href="user_list.php" class="btn btn-info w-100 mb-2">Kelola User</a>
                             </div>
                         </div>
                     </div>
