@@ -1,3 +1,47 @@
+<?php
+require_once '../includes/auth_admin.php';
+require_once '../includes/db.php';
+checkAdminAuth();
+
+$error = '';
+$success = '';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $nama_kamar = $_POST['nama_kamar'];
+    $deskripsi = $_POST['deskripsi'];
+    $harga_per_bulan = $_POST['harga_per_bulan'];
+    $fasilitas = $_POST['fasilitas'];
+    $status = $_POST['status'];
+    
+    // Handle file upload
+    $foto = '';
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+        $upload_dir = '../uploads/kamar/';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+        
+        $file_extension = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+        $foto = uniqid() . '.' . $file_extension;
+        $upload_path = $upload_dir . $foto;
+        
+        if (move_uploaded_file($_FILES['foto']['tmp_name'], $upload_path)) {
+            // File uploaded successfully
+        } else {
+            $foto = '';
+        }
+    }
+    
+    $stmt = $pdo->prepare("INSERT INTO kamar (nama_kamar, deskripsi, harga_per_bulan, fasilitas, foto, status) VALUES (?, ?, ?, ?, ?, ?)");
+    
+    if ($stmt->execute([$nama_kamar, $deskripsi, $harga_per_bulan, $fasilitas, $foto, $status])) {
+        $success = 'Kamar berhasil ditambahkan!';
+    } else {
+        $error = 'Terjadi kesalahan saat menambahkan kamar!';
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -9,9 +53,9 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.html">Admin Panel</a>
+            <a class="navbar-brand" href="dashboard.php">Admin Panel</a>
             <div class="navbar-nav ms-auto">
-                <a class="nav-link" href="../logout.html">Logout</a>
+                <a class="nav-link" href="../logout.php">Logout</a>
             </div>
         </div>
     </nav>
@@ -19,11 +63,19 @@
     <div class="container mt-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2>Tambah Kamar</h2>
-            <a href="kamar_list.html" class="btn btn-secondary">Kembali</a>
+            <a href="kamar_list.php" class="btn btn-secondary">Kembali</a>
         </div>
 
         <div class="card">
             <div class="card-body">
+                <?php if ($error): ?>
+                    <div class="alert alert-danger"><?php echo $error; ?></div>
+                <?php endif; ?>
+                
+                <?php if ($success): ?>
+                    <div class="alert alert-success"><?php echo $success; ?></div>
+                <?php endif; ?>
+
                 <form method="POST" enctype="multipart/form-data">
                     <div class="mb-3">
                         <label for="nama_kamar" class="form-label">Nama Kamar</label>
