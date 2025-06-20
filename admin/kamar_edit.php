@@ -1,0 +1,166 @@
+<?php
+require_once '../includes/auth_admin.php';
+require_once '../includes/db.php';
+checkAdminAuth();
+
+$error = '';
+$success = '';
+
+if (isset($_GET['id'])) {
+    $kamar_id = $_GET['id'];
+    $stmt = $pdo->prepare("SELECT * FROM kamar WHERE id = ?");
+    $stmt->execute([$kamar_id]);
+    $kamar = $stmt->fetch();
+    
+    if (!$kamar) {
+        header('Location: kamar_list.php');
+        exit();
+    }
+} else {
+    header('Location: kamar_list.php');
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $nama_kamar = $_POST['nama_kamar'];
+    $deskripsi = $_POST['deskripsi'];
+    $harga_per_bulan = $_POST['harga_per_bulan'];
+    $fasilitas = $_POST['fasilitas'];
+    $status = $_POST['status'];
+
+    $foto = $kamar['foto']; 
+    if (isset($_FILES['foto']) && $_FILES['foto']['error'] == 0) {
+        $upload_dir = '../uploads/kamar/';
+        if (!is_dir($upload_dir)) {
+            mkdir($upload_dir, 0777, true);
+        }
+ 
+        if ($kamar['foto'] && file_exists($upload_dir . $kamar['foto'])) {
+            unlink($upload_dir . $kamar['foto']);
+        }
+        
+        $file_extension = pathinfo($_FILES['foto']['name'], PATHINFO_EXTENSION);
+        $foto = uniqid() . '.' . $file_extension;
+        $upload_path = $upload_dir . $foto;
+        
+        if (!move_uploaded_file($_FILES['foto']['tmp_name'], $upload_path)) {
+            $foto = $kamar['foto']; 
+        }
+    }
+    
+    $stmt = $pdo->prepare("UPDATE kamar SET nama_kamar = ?, deskripsi = ?, harga_per_bulan = ?, fasilitas = ?, foto = ?, status = ? WHERE id = ?");
+    
+    if ($stmt->execute([$nama_kamar, $deskripsi, $harga_per_bulan, $fasilitas, $foto, $status, $kamar_id])) {
+        $success = 'Kamar berhasil diupdate!';
+        $stmt = $pdo->prepare("SELECT * FROM kamar WHERE id = ?");
+        $stmt->execute([$kamar_id]);
+        $kamar = $stmt->fetch();
+    } else {
+        $error = 'Terjadi kesalahan saat mengupdate kamar!';
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Kamar - Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="dashboard.php">Admin Panel</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="../logout.php">Logout</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Edit Kamar</h2>
+            <a href="kamar_list.php" class="btn btn-secondary">Kembali</a>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body">
+                        <?php if ($error): ?>
+                            <div class="alert alert-danger"><?php echo $error; ?></div>
+                        <?php endif; ?>
+                        
+                        <?php if ($success): ?>
+                            <div class="alert alert-success"><?php echo $success; ?></div>
+                        <?php endif; ?>
+
+                        <form method="POST" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="nama_kamar" class="form-label">Nama Kamar</label>
+                                <input type="text" class="form-control" id="nama_kamar" name="nama_kamar" 
+                                       value="<?php echo htmlspecialchars($kamar['nama_kamar']); ?>" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="deskripsi" class="form-label">Deskripsi</label>
+                                <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3"><?php echo htmlspecialchars($kamar['deskripsi']); ?></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="harga_per_bulan" class="form-label">Harga per Bulan</label>
+                                <input type="number" class="form-control" id="harga_per_bulan" name="harga_per_bulan" 
+                                       value="<?php echo $kamar['harga_per_bulan']; ?>" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="fasilitas" class="form-label">Fasilitas</label>
+                                <textarea class="form-control" id="fasilitas" name="fasilitas" rows="3"><?php echo htmlspecialchars($kamar['fasilitas']); ?></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="foto" class="form-label">Foto Kamar</label>
+                                <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+                                <small class="text-muted">Biarkan kosong jika tidak ingin mengubah foto</small>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-control" id="status" name="status" required>
+                                    <option value="tersedia" <?php echo $kamar['status'] == 'tersedia' ? 'selected' : ''; ?>>Tersedia</option>
+                                    <option value="disewa" <?php echo $kamar['status'] == 'disewa' ? 'selected' : ''; ?>>Disewa</option>
+                                    <option value="maintenance" <?php echo $kamar['status'] == 'maintenance' ? 'selected' : ''; ?>>Maintenance</option>
+                                </select>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">Update Kamar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Foto Saat Ini</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <?php if ($kamar['foto']): ?>
+                            <img src="../uploads/kamar/<?php echo $kamar['foto']; ?>" 
+                                 class="img-fluid rounded" alt="Foto Kamar" style="max-height: 200px;">
+                        <?php else: ?>
+                            <img src="../assets/default.jpg" 
+                                 class="img-fluid rounded" alt="No Image" style="max-height: 200px;">
+                            <p class="text-muted mt-2">Tidak ada foto</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
